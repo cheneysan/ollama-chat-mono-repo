@@ -3,20 +3,22 @@ package dev.p3s.ollamachat.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class UserEntity {
+public class ChatEntity {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -27,23 +29,20 @@ public class UserEntity {
     private Integer version;
 
     @NotNull
-    @NotBlank
-    private String email;
+    private UUID userId;
 
     @NotNull
     @NotBlank
-    private String password;
+    @Size(max = 255)
+    private String title;
 
-    @NotNull
-    @NotBlank
-    private String displayName;
-
-    private boolean enabled;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "chatId", fetch = FetchType.EAGER)
+    private List<MessageEntity> messages;
 
     @NotNull
     private LocalDateTime createdDate;
 
-    @OneToMany(cascade = CascadeType.DETACH, mappedBy = "userId", fetch = FetchType.LAZY)
-    private Set<ChatEntity> chats;
+    @NotNull
+    private LocalDateTime lastModifiedDate;
 
 }
