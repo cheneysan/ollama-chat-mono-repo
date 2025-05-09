@@ -1,9 +1,9 @@
 package dev.p3s.ollamachat.repositories;
 
-import dev.p3s.ollamachat.entities.ChatEntity;
-import dev.p3s.ollamachat.entities.MessageEntity;
+import dev.p3s.ollamachat.entities.Chat;
+import dev.p3s.ollamachat.entities.Message;
 import dev.p3s.ollamachat.entities.MessageSender;
-import dev.p3s.ollamachat.entities.UserEntity;
+import dev.p3s.ollamachat.entities.User;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,13 +26,13 @@ class ChatRepositoryTest {
     @Autowired
     ChatRepository chatRepository;
 
-    UserEntity user;
+    User user;
 
     @BeforeEach
     void createUser() {
-        user = userRepository.save(UserEntity.builder()
+        user = userRepository.save(User.builder()
                 .email("test@test.com")
-                .password("test123")
+                .encryptedPassword("123")
                 .displayName("Test User")
                 .createdDate(LocalDateTime.now())
                 .build());
@@ -40,14 +40,14 @@ class ChatRepositoryTest {
 
     @Test
     void testSaveChat() {
-        ChatEntity chat = ChatEntity.builder()
+        Chat chat = Chat.builder()
                 .title("Test Chat")
                 .userId(user.getId())
                 .createdDate(LocalDateTime.now())
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
 
-        ChatEntity savedChat = chatRepository.save(chat);
+        Chat savedChat = chatRepository.save(chat);
 
         assertNotNull(savedChat);
         assertNotNull(savedChat.getId());
@@ -55,16 +55,16 @@ class ChatRepositoryTest {
 
     @Test
     void testSaveChatWithMissingFields() {
-        ChatEntity chat = ChatEntity.builder().build();
+        Chat chat = Chat.builder().build();
         chatRepository.save(chat);
         assertThrows(ConstraintViolationException.class, () -> chatRepository.flush());
     }
 
     @Test
     void testSaveChatWithMessages() {
-        ChatEntity chat = buildTestChatWithMessages(user);
+        Chat chat = buildTestChatWithMessages(user);
 
-        ChatEntity savedChat = chatRepository.save(chat);
+        Chat savedChat = chatRepository.save(chat);
         chatRepository.flush();
 
         System.out.println(savedChat);
@@ -78,11 +78,11 @@ class ChatRepositoryTest {
 
     @Test
     void testUpdateChat() {
-        ChatEntity chat = chatRepository.save(buildTestChatWithMessages(user));
+        Chat chat = chatRepository.save(buildTestChatWithMessages(user));
 
         chat.setTitle("Updated Test Chat");
 
-        ChatEntity updatedChat = chatRepository.save(chat);
+        Chat updatedChat = chatRepository.save(chat);
         chatRepository.flush();
 
         assertEquals("Updated Test Chat", updatedChat.getTitle());
@@ -90,18 +90,18 @@ class ChatRepositoryTest {
 
     @Test
     void addMessageToChat() {
-        ChatEntity chat = chatRepository.save(buildTestChatWithMessages(user));
+        Chat chat = chatRepository.save(buildTestChatWithMessages(user));
 
         UUID message1Id = chat.getMessages().get(0).getId();
         UUID message2Id = chat.getMessages().get(1).getId();
 
-        chat.getMessages().add(MessageEntity.builder()
+        chat.getMessages().add(Message.builder()
                 .text("Test Message 3")
                 .sender(MessageSender.USER)
                 .creationDate(LocalDateTime.now())
                 .build());
 
-        ChatEntity updatedChat = chatRepository.save(chat);
+        Chat updatedChat = chatRepository.save(chat);
         chatRepository.flush();
 
         assertEquals(3, updatedChat.getMessages().size());
@@ -115,12 +115,12 @@ class ChatRepositoryTest {
 
     @Test
     void testMessageOrdering() {
-        ChatEntity chat = chatRepository.save(buildTestChatWithMessages(user));
+        Chat chat = chatRepository.save(buildTestChatWithMessages(user));
         chat.getMessages().add(buildTestMessage("Test Message 3", MessageSender.USER));
         chat.getMessages().add(buildTestMessage("Test Message 4", MessageSender.OLLAMA));
         chat.getMessages().add(buildTestMessage("Test Message 5", MessageSender.USER));
 
-        ChatEntity updatedChat = chatRepository.save(chat);
+        Chat updatedChat = chatRepository.save(chat);
         chatRepository.flush();
 
         assertEquals(5, updatedChat.getMessages().size());
@@ -133,7 +133,7 @@ class ChatRepositoryTest {
 
     @Test
     void testDeleteChat() {
-        ChatEntity chat = chatRepository.save(buildTestChatWithMessages(user));
+        Chat chat = chatRepository.save(buildTestChatWithMessages(user));
         chatRepository.delete(chat);
 
         chatRepository.flush();
@@ -143,9 +143,9 @@ class ChatRepositoryTest {
 
     @Test
     void testFindAllByUserId() {
-        UserEntity user2 = userRepository.save(UserEntity.builder()
+        User user2 = userRepository.save(User.builder()
                 .email("test@test.com")
-                .password("test123")
+                .encryptedPassword("test123")
                 .displayName("Test User")
                 .createdDate(LocalDateTime.now())
                 .build());
@@ -162,17 +162,17 @@ class ChatRepositoryTest {
 
     }
 
-    private ChatEntity buildTestChatWithMessages(UserEntity user) {
-        return ChatEntity.builder()
+    private Chat buildTestChatWithMessages(User user) {
+        return Chat.builder()
                 .userId(user.getId())
                 .title("Test Chat")
                 .messages(new ArrayList<>(List.of(
-                        MessageEntity.builder()
+                        Message.builder()
                                 .text("Test Message 1")
                                 .sender(MessageSender.USER)
                                 .creationDate(LocalDateTime.now())
                                 .build(),
-                        MessageEntity.builder()
+                        Message.builder()
                                 .text("Test Message 2")
                                 .sender(MessageSender.OLLAMA)
                                 .creationDate(LocalDateTime.now())
@@ -183,8 +183,8 @@ class ChatRepositoryTest {
                 .build();
     }
 
-    private MessageEntity buildTestMessage(String text, MessageSender sender) {
-        return MessageEntity.builder()
+    private Message buildTestMessage(String text, MessageSender sender) {
+        return Message.builder()
                 .text(text)
                 .sender(sender)
                 .creationDate(LocalDateTime.now())

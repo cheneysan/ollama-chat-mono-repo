@@ -1,6 +1,6 @@
 package dev.p3s.ollamachat.repositories;
 
-import dev.p3s.ollamachat.entities.UserEntity;
+import dev.p3s.ollamachat.entities.User;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,13 @@ class UserRepositoryTest {
 
     @Test
     void testSaveUser() {
-        UserEntity user = UserEntity.builder()
+        User user = User.builder()
                 .email("test@test.com")
-                .password("test123")
+                .encryptedPassword("test123")
                 .displayName("Test User")
                 .build();
 
-        UserEntity savedUser = userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
         assertThat(savedUser).isNotNull();
         assertThat(savedUser.getId()).isNotNull();
@@ -33,23 +33,23 @@ class UserRepositoryTest {
 
     @Test
     void testSaveUserWithMissingFields() {
-        UserEntity user = UserEntity.builder().build();
+        User user = User.builder().build();
         userRepository.save(user);
         assertThrows(ConstraintViolationException.class, () -> userRepository.flush());
     }
 
     @Test
     void testFindUserByEmail() {
-        UserEntity user = UserEntity.builder()
+        User user = User.builder()
                 .email("test@test.com")
-                .password("test123")
+                .encryptedPassword("test123")
                 .displayName("Test User")
                 .createdDate(LocalDateTime.now())
                 .build();
 
-        UserEntity savedUser = userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
-        UserEntity foundUser = userRepository.findByEmail(savedUser.getEmail());
+        User foundUser = userRepository.findByEmail(savedUser.getEmail());
 
         assertThat(foundUser).isNotNull();
         assertThat(foundUser.getId()).isEqualTo(savedUser.getId());
@@ -57,22 +57,22 @@ class UserRepositoryTest {
 
     @Test
     void testFindUnknownByEmail() {
-        UserEntity foundUser = userRepository.findByEmail("nobody@test.com");
+        User foundUser = userRepository.findByEmail("nobody@test.com");
         assertThat(foundUser).isNull();
     }
 
     @Test
     void testUpdateUser() {
-        UserEntity user = userRepository.save(UserEntity.builder()
+        User user = userRepository.save(User.builder()
                 .email("test@test.com")
-                .password("test123")
+                .encryptedPassword("test123")
                 .displayName("Test User")
                 .createdDate(LocalDateTime.now())
                 .build());
 
         user.setDisplayName("Updated Test User");
 
-        UserEntity updatedUser = userRepository.save(user);
+        User updatedUser = userRepository.save(user);
 
         assertThat(updatedUser).isNotNull();
         assertThat(updatedUser.getId()).isEqualTo(user.getId());
@@ -81,9 +81,9 @@ class UserRepositoryTest {
 
     @Test
     void testDeleteUser() {
-        UserEntity user = userRepository.save(UserEntity.builder()
+        User user = userRepository.save(User.builder()
                 .email("test@test.com")
-                .password("test123")
+                .encryptedPassword("test123")
                 .displayName("Test User")
                 .createdDate(LocalDateTime.now())
                 .build());
