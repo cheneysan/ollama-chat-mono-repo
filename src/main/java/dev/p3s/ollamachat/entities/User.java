@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class UserEntity {
+public class User {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -32,7 +32,7 @@ public class UserEntity {
 
     @NotNull
     @NotBlank
-    private String password;
+    private String encryptedPassword;
 
     @NotNull
     @NotBlank
@@ -43,7 +43,7 @@ public class UserEntity {
     @NotNull
     private LocalDateTime createdDate;
 
-    @OneToMany(cascade = CascadeType.DETACH, mappedBy = "userId", fetch = FetchType.LAZY)
-    private Set<ChatEntity> chats;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId", fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<Chat> chats;
 
 }
