@@ -16,6 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "users") // automatic naming is `user` but that causes SQL errors in H2 (reserved word)
 public class User {
 
     @Id
