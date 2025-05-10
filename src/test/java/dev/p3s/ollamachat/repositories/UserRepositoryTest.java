@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -49,16 +50,16 @@ class UserRepositoryTest {
 
         User savedUser = userRepository.save(user);
 
-        User foundUser = userRepository.findByEmail(savedUser.getEmail());
+        Optional<User> foundUserResult = userRepository.findByEmail(savedUser.getEmail());
 
-        assertThat(foundUser).isNotNull();
-        assertThat(foundUser.getId()).isEqualTo(savedUser.getId());
+        assertThat(foundUserResult).isPresent();
+        assertThat(foundUserResult.get().getId()).isEqualTo(savedUser.getId());
     }
 
     @Test
     void testFindUnknownByEmail() {
-        User foundUser = userRepository.findByEmail("nobody@test.com");
-        assertThat(foundUser).isNull();
+        Optional<User> foundUserResult = userRepository.findByEmail("nobody@test.com");
+        assertThat(foundUserResult).isNotPresent();
     }
 
     @Test
