@@ -1,6 +1,6 @@
-package dev.p3s.ollamachat.repositories;
+package dev.p3s.ollamachat.repository;
 
-import dev.p3s.ollamachat.entities.User;
+import dev.p3s.ollamachat.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

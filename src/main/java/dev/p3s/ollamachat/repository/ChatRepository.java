@@ -1,6 +1,6 @@
-package dev.p3s.ollamachat.repositories;
+package dev.p3s.ollamachat.repository;
 
-import dev.p3s.ollamachat.entities.Chat;
+import dev.p3s.ollamachat.entity.Chat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

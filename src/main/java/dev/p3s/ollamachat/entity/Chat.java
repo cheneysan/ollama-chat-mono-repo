@@ -1,23 +1,24 @@
-package dev.p3s.ollamachat.entities;
+package dev.p3s.ollamachat.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "users") // automatic naming is `user` but that causes SQL errors in H2 (reserved word)
-public class User {
+public class Chat {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -28,23 +29,20 @@ public class User {
     private Integer version;
 
     @NotNull
-    @NotBlank
-    private String email;
+    private UUID userId;
 
     @NotNull
     @NotBlank
-    private String encryptedPassword;
+    @Size(max = 255)
+    private String title;
 
-    @NotNull
-    @NotBlank
-    private String displayName;
-
-    private boolean enabled;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "chatId", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Message> messages;
 
     @NotNull
     private LocalDateTime createdDate;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId", fetch = FetchType.LAZY, orphanRemoval = true)
-    private Set<Chat> chats;
+    @NotNull
+    private LocalDateTime lastModifiedDate;
 
 }

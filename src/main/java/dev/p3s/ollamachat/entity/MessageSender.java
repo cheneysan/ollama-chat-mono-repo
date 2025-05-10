@@ -1,4 +1,4 @@
-package dev.p3s.ollamachat.entities;
+package dev.p3s.ollamachat.entity;
 
 public enum MessageSender {
     USER, OLLAMA,

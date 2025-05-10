@@ -1,4 +1,4 @@
-package dev.p3s.ollamachat.entities;
+package dev.p3s.ollamachat.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;

@@ -1,6 +1,6 @@
-package dev.p3s.ollamachat.repositories;
+package dev.p3s.ollamachat.repository;
 
-import dev.p3s.ollamachat.entities.User;
+import dev.p3s.ollamachat.entity.User;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

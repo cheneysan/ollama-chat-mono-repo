@@ -1,9 +1,9 @@
-package dev.p3s.ollamachat.repositories;
+package dev.p3s.ollamachat.repository;
 
-import dev.p3s.ollamachat.entities.Chat;
-import dev.p3s.ollamachat.entities.Message;
-import dev.p3s.ollamachat.entities.MessageSender;
-import dev.p3s.ollamachat.entities.User;
+import dev.p3s.ollamachat.entity.Chat;
+import dev.p3s.ollamachat.entity.Message;
+import dev.p3s.ollamachat.entity.MessageSender;
+import dev.p3s.ollamachat.entity.User;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
