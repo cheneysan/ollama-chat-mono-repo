@@ -39,11 +39,12 @@ public class AuthController {
             ));
         } catch (BadCredentialsException e) {
             log.trace("Bad credentials", e);
-            throw new AuthenticationException("Invalid email or password");
+            return ResponseEntity.badRequest().body("Invalid email or password");
         }
 
         final UserSummary userSummary = userService.getUserByEmail(request.getEmail()).orElseThrow(AuthenticationException::new);
         final String token = jwtUtil.generateToken(userSummary.getEmail());
+        log.info("Login successful - user with email {} logged in", request.getEmail());
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }
 
@@ -53,8 +54,9 @@ public class AuthController {
         var result = userService.registerUser(request.getEmail(), encryptedPassword, request.getDisplayName());
         if (result.isEmpty()) {
             log.error("Registration failed - user with email {} already exists", request.getEmail());
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("This email address is already associated with an account");
         }
+        log.info("Registration successful - user with email {} registered", request.getEmail());
         return ResponseEntity.ok().build();
     }
 

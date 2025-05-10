@@ -2,6 +2,7 @@ package dev.p3s.ollamachat.service;
 
 import dev.p3s.ollamachat.entity.User;
 import dev.p3s.ollamachat.mapper.ModelEntityMapper;
+import dev.p3s.ollamachat.model.UserDto;
 import dev.p3s.ollamachat.model.UserSummary;
 import dev.p3s.ollamachat.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -48,6 +49,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserSummary> getUserByEmail(String email) {
         return userRepository.findByEmail(email).map(modelEntityMapper::toSummary);
+    }
+
+    @Override
+    public Optional<UserDto> getFullUserByEmail(String email) {
+        return userRepository.findByEmail(email).map(modelEntityMapper::toDto);
     }
 
     @Override

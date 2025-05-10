@@ -1,5 +1,6 @@
 package dev.p3s.ollamachat.service;
 
+import dev.p3s.ollamachat.model.UserDto;
 import dev.p3s.ollamachat.model.UserSummary;
 
 import java.util.Optional;
@@ -12,6 +13,8 @@ public interface UserService {
     Optional<UserSummary> getUserById(UUID userId);
 
     Optional<UserSummary> getUserByEmail(String email);
+
+    Optional<UserDto> getFullUserByEmail(String email);
 
     Optional<UserSummary> updateUserByEmail(String email, String displayName);
 
