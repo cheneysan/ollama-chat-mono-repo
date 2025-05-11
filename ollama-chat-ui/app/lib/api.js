@@ -38,19 +38,73 @@ export const signin = async ({email, password}) => {
     }
 }
 
-export const createNewChat = async ({name, message}) => {
+export const createNewChat = async (token, {name, message}) => {
     const response = await fetch(`${API_URL}/chat`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
         },
         body: JSON.stringify({
-            name: name.trim(),
+            title: name.trim(),
             message: message.trim(),
         })
     });
 
-    if(!response.ok) {
+    console.log(response);
+
+    if(response.ok) {
+        return await response.json();
+    } else {
+        throw new Error(await response.text());
+    }
+}
+
+export const getChatHistory = async (token) => {
+    const response = await fetch(`${API_URL}/chat`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+        },
+    });
+
+    if(response.ok) {
+        return await response.json();
+    } else {
+        throw new Error(await response.text());
+    }
+}
+
+export const getChat = async (token, chatId) => {
+    const response = await fetch(`${API_URL}/chat/${chatId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+        },
+    });
+
+    if (response.ok) {
+        return await response.json();
+    } else {
+        throw new Error(await response.text());
+    }
+}
+
+export const sendMessage = async (token, {chatId, message}) => {
+    const response = await fetch(`${API_URL}/chat/${chatId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+        },
+        body: JSON.stringify({
+            message: message.trim(),
+        })
+    });
+
+    if (response.ok) {
         return await response.json();
     } else {
         throw new Error(await response.text());

@@ -8,7 +8,7 @@ import FormContainer from "../components/form-container";
 import Input from "../components/input";
 import Title from "../components/title";
 import Spinner from "../components/spinner.jsx";
-import {signup} from "../lib/api";
+import {registerNewUser} from "../lib/api";
 
 const SignUpForm = () => {
     const {register, handleSubmit, watch, formState: {errors}} = useForm();
@@ -24,7 +24,7 @@ const SignUpForm = () => {
         setBusy(true);
 
         try {
-            await signup(formData);
+            await registerNewUser(formData);
             const msg = 'Registration successful. Please sign in.'
             nav(`/signin?message=${btoa(msg)}`);
         } catch (error) {
