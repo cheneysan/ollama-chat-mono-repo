@@ -46,7 +46,7 @@ Open the `ollama-chat-server` in your favourite IDE or in the terminal then run 
 
 ```
 ./mvnw package
-java -jar 
+java -jar target/ollama-chat-server-0.0.1-SNAPSHOT.jar
 ```
 
 That will launch the API running on http://localhost:8080/
