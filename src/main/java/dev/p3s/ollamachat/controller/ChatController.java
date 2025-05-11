@@ -5,6 +5,7 @@ import dev.p3s.ollamachat.error.UnauthorizedException;
 import dev.p3s.ollamachat.error.UserNotFoundException;
 import dev.p3s.ollamachat.model.*;
 import dev.p3s.ollamachat.service.ChatService;
+import dev.p3s.ollamachat.service.OllamaService;
 import dev.p3s.ollamachat.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class ChatController {
 
     private final UserService userService;
     private final ChatService chatService;
+    private final OllamaService ollamaService;
 
     @PostMapping
     public ResponseEntity<ChatDto> createNewChat(@RequestBody ChatCreateRequest request) {
@@ -51,12 +53,8 @@ public class ChatController {
     public ResponseEntity<MessageSummary> sendMessage(@PathVariable UUID id, @RequestBody SendMessageRequest request) {
         ChatDto chat = getChat(id);
         chatService.addChatMessage(chat.getId(), request.getMessage(), Sender.USER);
-
-        // TODO send to Ollama and wait for a response
-        String response = "Ok then...";
-
+        String response = ollamaService.sendMessage(request.getMessage());
         MessageSummary msg = chatService.addChatMessage(id, response, Sender.OLLAMA);
-
         return ResponseEntity.ok(msg);
     }
 

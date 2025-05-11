@@ -3,6 +3,7 @@ package dev.p3s.ollamachat.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -30,6 +31,7 @@ public class Message {
 
     @NotNull
     @NotEmpty
+    @Size(max = 65536)
     private String text;
 
     @NotNull
