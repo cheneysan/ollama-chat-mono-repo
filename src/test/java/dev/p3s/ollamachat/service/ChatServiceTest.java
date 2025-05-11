@@ -41,6 +41,7 @@ class ChatServiceTest {
     private UUID chatId;
     private User user;
     private Chat chat;
+    private ChatDto chatDto;
     private ChatSummary chatSummary;
 
     @BeforeEach
@@ -58,6 +59,13 @@ class ChatServiceTest {
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
 
+        chatDto = ChatDto.builder()
+                .id(chatId)
+                .title("Test Chat")
+                .createdDate(LocalDateTime.now())
+                .lastModifiedDate(LocalDateTime.now())
+                .build();
+
         chatSummary = ChatSummary.builder()
                 .id(chatId)
                 .title("Test Chat")
@@ -70,27 +78,27 @@ class ChatServiceTest {
     void getChatsForUser() {
         List<Chat> chats = List.of(chat);
         when(chatRepository.findAllByUserId(userId)).thenReturn(chats);
-        when(modelEntityMapper.toSummary(any(Chat.class))).thenReturn(chatSummary);
+        when(modelEntityMapper.toDto(any(Chat.class))).thenReturn(chatDto);
 
         List<ChatDto> result = chatService.getChatsForUser(userId);
 
         assertEquals(1, result.size());
-        assertEquals(chatSummary, result.get(0));
+        assertEquals(chatDto, result.get(0));
         verify(chatRepository).findAllByUserId(userId);
-        verify(modelEntityMapper, times(chats.size())).toSummary(any(Chat.class));
+        verify(modelEntityMapper, times(chats.size())).toDto(any(Chat.class));
     }
 
     @Test
     void getChatById() {
         when(chatRepository.findById(chatId)).thenReturn(Optional.of(chat));
-        when(modelEntityMapper.toSummary(chat)).thenReturn(chatSummary);
+        when(modelEntityMapper.toDto(chat)).thenReturn(chatDto);
 
         Optional<ChatDto> result = chatService.getChatById(chatId);
 
         assertTrue(result.isPresent());
-        assertEquals(chatSummary, result.get());
+        assertEquals(chatDto, result.get());
         verify(chatRepository).findById(chatId);
-        verify(modelEntityMapper).toSummary(chat);
+        verify(modelEntityMapper).toDto(any(Chat.class));
     }
 
     @Test
@@ -108,14 +116,14 @@ class ChatServiceTest {
     void createChat() {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(chatRepository.save(any(Chat.class))).thenReturn(chat);
-        when(modelEntityMapper.toSummary(chat)).thenReturn(chatSummary);
+        when(modelEntityMapper.toDto(any(Chat.class))).thenReturn(chatDto);
 
         ChatDto result = chatService.createChat(userId, "New Chat", "Hello");
 
-        assertEquals(chatSummary, result);
+        assertEquals(chatDto, result);
         verify(userRepository).findById(userId);
         verify(chatRepository).save(any(Chat.class));
-        verify(modelEntityMapper).toSummary(chat);
+        verify(modelEntityMapper).toDto(any(Chat.class));
     }
 
     @Test

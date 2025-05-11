@@ -41,6 +41,9 @@ class AuthControllerTest {
     private UserService userService;
 
     @MockitoBean
+    private ChatController chatController;
+
+    @MockitoBean
     private JwtUtil jwtUtil;
 
     @Autowired
