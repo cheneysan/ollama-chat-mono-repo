@@ -8,7 +8,6 @@ import Input from '../components/input'
 import Spinner from "../components/spinner";
 import * as api from "../lib/api";
 import {useEffect, useState } from "react";
-import {useWatch} from 'react-hook-form'
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -25,6 +24,7 @@ const HomePageLayout = styled.div`
 `;
 
 const Sidebar = styled.div`
+    min-width: 300px;
     width: 300px; 
     background-color: #282828;
     padding: 20px;
@@ -64,6 +64,7 @@ const MainContent = styled.div`
 
 const Header = styled.div`
     display: flex;
+    gap: 10px;
     justify-content: flex-end;
     padding: 10px;
     background-color: #282828;
@@ -74,33 +75,35 @@ const MessageArea = styled.div`
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    padding: 10px 0;
+    padding: 20px 30px;
 `
 
 const MessageInputArea = styled.div`
     display: flex;
+    flex-direction: flex-row;
     padding: 10px;
     gap: 10px;
     background-color: #282828;
 `;
 
 const Message = styled.div`
-    padding: 10px;
+    max-width: 75%;
+    padding: 20px;
     border-radius: 8px;
     margin: 10px 10px 20px 10px;
 `;
 
 const UserMessage = styled(Message)`
-    background-color: #008804;
-    margin-right: 50px;
+    background-color: #494949;
+    margin-right: auto;
 `;
 
 const BotMessage = styled(Message)`
     background-color: #003b90;
-    margin-left: 50px;
+    margin-left: auto;
 `;
 
-const SignOutButton = styled.button`
+const HeaderButton = styled.button`
     background-color: transparent;
     border: none;
     color: white;
@@ -140,7 +143,17 @@ export default function Home() {
         loadHistory();
     }, []);
 
+    const newChat = () => {
+        setChat(null);
+        setMessages([]);
+        setMessage('');
+    }
+
     const loadChat = async (chatId) => {
+        if (chatId === null) {
+            return;
+        }
+
         try {
             setLoadingChat(true);
             let chat = await api.getChat(token, chatId);
@@ -166,7 +179,7 @@ export default function Home() {
         // Create a new chat if we aren't in one
         let currentChat = chat;
         if (!currentChat) {
-            let name = message.substring(0, 20);
+            let name = message.substring(0, 200);
             let newChat = await api.createNewChat(token, { name, message });
             setChat(newChat);
             setHistory([...history, newChat]);
@@ -209,7 +222,8 @@ export default function Home() {
             </Sidebar>
             <MainContent>
                 <Header>
-                    <SignOutButton onClick={() => signout()}>Sign Out</SignOutButton>
+                    <HeaderButton onClick={() => newChat()}>New Chat</HeaderButton>
+                    <HeaderButton onClick={() => signout()}>Sign Out</HeaderButton>
                 </Header>
                 <MessageArea>
                     {messages.map(message => {
