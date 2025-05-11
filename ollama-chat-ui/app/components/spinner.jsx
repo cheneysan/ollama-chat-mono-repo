@@ -16,7 +16,7 @@ const SpinnerContainer = styled.div`
 `;
 
 const Spinner = () => {
-    return <SpinnerContainer />;
+    return <SpinnerContainer data-testid="spinner" />;
 };
 
 export default Spinner;

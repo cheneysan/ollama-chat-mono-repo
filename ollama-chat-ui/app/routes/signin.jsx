@@ -8,25 +8,25 @@ import FormContainer from "../components/form-container";
 import Input from "../components/input";
 import Title from "../components/title";
 import Spinner from "../components/spinner.jsx";
-import {signup} from "../lib/api";
+import Navlink from "../components/navlink.jsx";
+import {useAuth} from "../providers/auth-provider.jsx";
+import {signin as apiSignin} from "../lib/api";
 
 const SignUpForm = () => {
-    const {register, handleSubmit, watch, formState: {errors}} = useForm();
+    const {register, handleSubmit, formState: {errors}} = useForm();
     const [submitError, setSubmitError] = useState(null);
     const [busy, setBusy] = useState(false);
-    const password = watch("password");
+    const {signin} = useAuth();
 
     const nav = useNavigate();
+    const query = new URLSearchParams(window.location.search);
+    const message = query.get('message') ? atob(query.get('message')) : null;
 
     const onSubmit = async (data) => {
-        const {passwordConfirm, ...formData} = data;
-
-        setBusy(true);
-
         try {
-            await signup(formData);
-            const msg = 'Registration successful. Please sign in.'
-            nav(`/signin?message=${btoa(msg)}`);
+            setBusy(true);
+            let token = await apiSignin(data);
+            signin(token, () => nav('/'));
         } catch (error) {
             setSubmitError(error.message ? error.message : 'An unexpected error occurred. Try again later');
         } finally {
@@ -36,8 +36,9 @@ const SignUpForm = () => {
 
     return (
         <DialogContainer>
-            <FormContainer onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-                <Title>Register as New User</Title>
+            <FormContainer onSubmit={handleSubmit(onSubmit)} role="form" autoComplete="off">
+                <Title>Sign In</Title>
+                <center><p>{message ? message : 'Welcome back! Please sign in'}</p></center>
                 <Input type="email"
                        placeholder="Email"
                        {...register('email', {
@@ -46,14 +47,6 @@ const SignUpForm = () => {
                        })}
                 />
                 {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
-
-                <Input type="text"
-                       placeholder="Display Name"
-                       {...register("displayName", {
-                           required: "Display name is required"
-                       })}
-                />
-                {errors.displayName && <ErrorMessage>{errors.displayName.message}</ErrorMessage>}
 
                 <Input type="password"
                        placeholder="Password"
@@ -64,19 +57,11 @@ const SignUpForm = () => {
                 />
                 {errors.password && <ErrorMessage>{errors.password.message}< /ErrorMessage>}
 
-                <Input type="password"
-                       placeholder="Confirm Password"
-                       {...register("passwordConfirm", {
-                           required: "Please confirm your password",
-                           validate: (value) => value === password || "Passwords do not match"
-                       })}
-                />
-                {errors.passwordConfirm && <ErrorMessage>{errors.passwordConfirm.message}</ErrorMessage>}
-
                 <Button type="submit" disabled={busy}>
-                    {busy ? <Spinner/> : 'Register' }
+                    {busy ? <Spinner/> : 'Sign In'}
                 </Button>
                 {submitError && <ErrorMessage>{submitError}</ErrorMessage>}
+                <Navlink to="/signup">Don't have an account? Register now!</Navlink>
             </FormContainer>
         </DialogContainer>
     )

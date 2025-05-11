@@ -5,7 +5,7 @@ const DialogContainer = styled.div`
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #141414;
+    background-image: radial-gradient(#343434, #141414);
 `;
 
 export default DialogContainer;
