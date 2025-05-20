@@ -12,11 +12,13 @@
     "@react-router/node": "^7.5.3",
     "@react-router/serve": "^7.5.3",
     "isbot": "^5.1.27",
+    "prop-types": "^15.8.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.56.3",
     "react-router": "^7.5.3",
-    "styled-components": "^6.1.18"
+    "styled-components": "^6.1.18",
+    "swr": "^2.3.3"
   },
   "devDependencies": {
     "@react-router/dev": "^7.5.3",

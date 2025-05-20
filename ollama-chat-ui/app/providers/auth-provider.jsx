@@ -7,12 +7,12 @@ export function AuthProvider({children}) {
     let [token, setToken] = useState(null);
     let navigate = useNavigate();
 
-    let signin = (newToken, callback) => {
+    const signin = (newToken, callback) => {
         setToken(newToken);
         callback();
     }
 
-    let signout = () => {
+    const signout = () => {
         setToken(null);
         navigate('/signin');
     }
