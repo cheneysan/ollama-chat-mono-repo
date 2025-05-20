@@ -17,8 +17,6 @@
     "paths": {
       "~/*": ["./app/*"]
     },
-    "include": ["src/**/*.{ts,tsx}"],
-    "exclude": ["**/*.js", "**/*.jsx"],
     "esModuleInterop": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
